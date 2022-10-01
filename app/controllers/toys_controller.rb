@@ -7,16 +7,23 @@ class ToysController < ApplicationController
   end
 
   def create
-    toy = Toys.create(toy_params)
-    render json: toy, status: :created
-  end
+    toy = Toy.new(toy_params)
+    if toy.save
+      render json: toy, status: :created
+    else
+      render json: toy.errors, status: :unprocessable_entity
+    end
+  end 
 
   def update
+    # update likes only
     toy = Toy.find_by(id: params[:id])
-    toy.update(toy_params)
+    toy.update(likes: params[:likes])
+    render json: toy
   end
 
   def destroy
+    # delete a toy
     toy = Toy.find_by(id: params[:id])
     toy.destroy
     head :no_content
